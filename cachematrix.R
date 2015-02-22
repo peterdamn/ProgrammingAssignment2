@@ -3,11 +3,11 @@
 
 ## Write a short comment describing this function
 
-# makeCacheMatrix creates a list containing a function to
-# 1. set the value of the matrix
-# 2. get the value of the matrix
-# 3. set the value of inverse of the matrix
-# 4. get the value of inverse of the matrix
+# makeCacheMatrix contain a list of four functions
+# when matrix object is created, you have the matrix and the inv of it
+# Although initially the inv is set to NULL
+# the set functions are there for updates in case there are changes
+# to the matrix object :)
 
 makeCacheMatrix <- function(x = matrix()) {
   inv <- NULL
@@ -25,10 +25,11 @@ makeCacheMatrix <- function(x = matrix()) {
 
 ## Write a short comment describing this function
 
-# The following function returns the inverse of the matrix. It first checks if
-# the inverse has already been computed. If so, it gets the result and skips the
-# computation. If not, it computes the inverse, sets the value in the cache via
-# setinverse function.
+# The function gives us the inverse of the matrix object.  
+# If the inverse is calculated already, return the result and skip the
+# computation (lazy evaluation). If not, it computes the inverse,
+# use setinverse function to set the value.
+
 
 # This function assumes that the matrix is always invertible.
 
@@ -45,25 +46,43 @@ cacheSolve <- function(x, ...) {
   inv
 }
 
-## Sample run:
-## source("cachematrix.R")
-## > x = rbind(c(1, -1/4), c(-1/4, 1))
-## > m = makeCacheMatrix(x)
-## > m$get()
-##       [,1]  [,2]
-## [1,]  1.00 -0.25
-## [2,] -0.25  1.00
+# the following test is from this post:
+# https://class.coursera.org/rprog-011/forum/thread?thread_id=815#post-3616
+#--------------------------------------------------------------------
 
-## No cache in the first run
-## > cacheSolve(m)
-##           [,1]      [,2]
-## [1,] 1.0666667 0.2666667
-## [2,] 0.2666667 1.0666667
+# source('~/R coursera/ProgrammingAssignment2/cachematrix.R')
+# exampleMatrix <- matrix(c(1, 0, 5, 2, 1, 6, 3, 4, 0), 3, 3)
+# matrixVector <- makeCacheMatrix(exampleMatrix)
 
-## Retrieving from the cache in the second run
-## > cacheSolve(m)
-## getting cached data.
-##           [,1]      [,2]
-## [1,] 1.0666667 0.2666667
-## [2,] 0.2666667 1.0666667
-## > 
+# matrixVector$get()
+
+#[,1] [,2] [,3]
+#[1,]    1    2    3
+#[2,]    0    1    4
+#[3,]    5    6    0
+
+# cacheSolve(matrixVector)
+
+#[],1] [,2] [,3]
+#[1,]  -24   18    5
+#[2,]   20  -15   -4
+#[3,]   -5    4    1
+
+#> cacheSolve(matrixVector)
+
+#getting cached data.
+
+#[,1] [,2] [,3]
+#[1,]  -24   18    5
+#[2,]   20  -15   -4
+#[3,]   -5    4    1
+
+#> matrixVector$get() %*% cacheSolve(matrixVector)
+# get the cache and see if we get identity matrix with enough precision
+
+#getting cached data.
+
+#[,1]          [,2]          [,3]
+#[1,]    1 -3.552714e-15 -8.881784e-16
+#[2,]    0  1.000000e+00  0.000000e+00
+#[3,]    0  0.000000e+00  1.000000e+00
